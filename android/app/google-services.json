@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "937750694738",
+    "project_id": "emotioncare-cea39",
+    "storage_bucket": "emotioncare-cea39.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937750694738:android:f94acc825a81bd0f83088b",
+        "android_client_info": {
+          "package_name": "com.example.emotioncare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl0fy0_6Q4vWB87NkY8MP8H-uuzwUnRtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
