@@ -5,11 +5,20 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFE6EF),
+      appBar: AppBar(
+        title: const Text("EmotionCare"),
+        backgroundColor: Colors.purpleAccent,
+      ),
       body: Center(
         child: Text(
-          'Home Page (EmotionCare)',
-          style: TextStyle(fontSize: 22),
+          "Hoş geldin 🌙",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.purple.shade900,
+          ),
         ),
       ),
     );

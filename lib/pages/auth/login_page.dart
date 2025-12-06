@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../home/home_page.dart'; // HomePage için import ekledim
+import '../mood/mood_page.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,7 +30,6 @@ class _LoginPageState extends State<LoginPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      // Arka plan: soft pembe
       backgroundColor: const Color(0xFFFFE6EF),
       body: SafeArea(
         child: Center(
@@ -39,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 12),
 
-                // Uygulama başlığı
                 Text(
                   'EmotionCare',
                   textAlign: TextAlign.center,
@@ -51,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 8),
 
-                // Alt açıklama
                 Text(
                   'Duygularını takip et, kendine iyi bak 💜',
                   textAlign: TextAlign.center,
@@ -62,10 +62,8 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 32),
 
-                // Kart görünümünde login form
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(24),
@@ -90,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 16),
 
-                        // E-posta
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -111,7 +108,6 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 12),
 
-                        // Şifre
                         TextFormField(
                           controller: _passwordController,
                           obscureText: _obscurePassword,
@@ -144,32 +140,24 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 8),
 
-                        // Şifremi unuttum
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {
-                              // TODO: Şifre reset ekranına yönlendirme
-                            },
+                            onPressed: () {},
                             child: const Text('Şifremi unuttum'),
                           ),
                         ),
 
                         const SizedBox(height: 8),
 
-                        // Giriş yap butonu
                         SizedBox(
                           height: 48,
                           child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                // TODO: Sonra buraya Firebase login gelecek
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Giriş butonuna basıldı (Firebase henüz bağlı değil) ✨',
-                                    ),
-                                  ),
+                                Navigator.pushReplacement(
+                                  context,
+                                MaterialPageRoute(builder: (_) => MoodPage()),
                                 );
                               }
                             },
@@ -192,7 +180,6 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 16),
 
-                        // veya bölücüsü
                         Row(
                           children: [
                             Expanded(
@@ -210,11 +197,8 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 12),
 
-                        // Kayıt ol butonu
                         OutlinedButton.icon(
-                          onPressed: () {
-                            // TODO: RegisterPage'e yönlendirme
-                          },
+                          onPressed: () {},
                           icon: const Icon(Icons.person_add_alt_1_outlined),
                           label: const Text('Yeni hesap oluştur'),
                           style: OutlinedButton.styleFrom(
@@ -231,7 +215,6 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 24),
 
-                // Alt bilgi
                 Text(
                   'Devam ederek EmotionCare kullanım şartlarını kabul etmiş olursun.',
                   textAlign: TextAlign.center,
