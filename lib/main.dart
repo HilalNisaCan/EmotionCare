@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'pages/auth/login_page.dart';
+import 'pages/music/music_page.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +21,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFFFE6EF),
       ),
+      routes: {
+    '/music': (context) => const MusicPage(),
+      },
       home: const LoginPage(),
     );
   }
-}
+}   

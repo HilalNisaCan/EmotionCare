@@ -282,7 +282,7 @@ class DashboardPage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 // MusicPage hazır değilse şimdilik MoodPage:
-                                builder: (context) => MoodPage(),
+                                builder: (context) => MusicPage(),
                               ),
                             );
                           },
