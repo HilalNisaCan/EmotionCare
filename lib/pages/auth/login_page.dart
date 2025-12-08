@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../home/home_page.dart'; // HomePage için import ekledim
-import '../mood/mood_page.dart';
+
+// 👇 GİDİLECEK SAYFALARIN İMPORTLARI
 import '../dashboard/dashboard_page.dart';
+import 'register_page.dart'; // Aynı klasörde olduğu için direkt yazıyoruz
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -155,9 +156,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
+                                // 👇 DASHBOARD'A GİT
                                 Navigator.pushReplacement(
                                   context,
-                                MaterialPageRoute(builder: (_) => DashboardPage()),
+                                  MaterialPageRoute(builder: (_) => const DashboardPage()),
                                 );
                               }
                             },
@@ -197,8 +199,15 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 12),
 
+                        // 👇 "YENİ HESAP OLUŞTUR" BUTONU DÜZELTİLDİ
                         OutlinedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            // 👇 ARTIK KAYIT SAYFASINA GİDİYOR
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const RegisterPage()),
+                            );
+                          },
                           icon: const Icon(Icons.person_add_alt_1_outlined),
                           label: const Text('Yeni hesap oluştur'),
                           style: OutlinedButton.styleFrom(

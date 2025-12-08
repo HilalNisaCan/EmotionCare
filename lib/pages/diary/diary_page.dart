@@ -1,112 +1,90 @@
+// 📂 Dosya: lib/pages/diary/diary_page.dart
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
-class DiaryPage extends StatefulWidget {
+import 'diary_provider.dart'; // Aynı klasörde olduğu için direkt çağırıyoruz
+
+class DiaryPage extends ConsumerWidget {
   const DiaryPage({super.key});
 
   @override
-  State<DiaryPage> createState() => _DiaryPageState();
-}
-
-class _DiaryPageState extends State<DiaryPage> {
-  final TextEditingController _controller = TextEditingController();
-
-  List<String> entries = []; // Günlük listesi
-
-  void _addEntry() {
-    if (_controller.text.trim().isEmpty) return;
-
-    setState(() {
-      entries.add(_controller.text.trim());
-      _controller.clear();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final diaryEntries = ref.watch(diaryProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFE6EF),
+      backgroundColor: const Color(0xFFF3E5F5),
       appBar: AppBar(
-        title: const Text("Günlük"),
+        title: Text("Günlüğüm 📖", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.purpleAccent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            // Yazma alanı
-            TextField(
-              controller: _controller,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: "Bugün neler hissettin? 💜",
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
+      body: diaryEntries.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.menu_book, size: 80, color: Colors.grey),
+                  const SizedBox(height: 10),
+                  Text("Henüz bir anı yok...", style: GoogleFonts.poppins(fontSize: 18, color: Colors.grey)),
+                  Text("Bugün neler hissettin?", style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey)),
+                ],
               ),
-            ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(15),
+              itemCount: diaryEntries.length,
+              itemBuilder: (context, index) {
+                final entry = diaryEntries[index];
+                final dateStr = DateFormat('d MMMM yyyy - HH:mm', 'tr_TR').format(entry.date);
 
-            const SizedBox(height: 12),
-
-            // Kaydet butonu
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: _addEntry,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purpleAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: const Text(
-                  "Kaydet",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Liste
-            Expanded(
-              child: entries.isEmpty
-                  ? Text(
-                      "Henüz bir günlük eklemedin 💭",
-                      style: theme.textTheme.bodyMedium,
-                    )
-                  : ListView.builder(
-                      itemCount: entries.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          padding: const EdgeInsets.all(16),
-                          margin: const EdgeInsets.only(bottom: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(entry.emoji, style: const TextStyle(fontSize: 30)),
+                                const SizedBox(width: 10),
+                                Text(
+                                  entry.moodLabel,
+                                  style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
+                                ),
+                              ],
+                            ),
+                            Text(dateStr, style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
+                          ],
+                        ),
+                        const Divider(),
+                        if (entry.explanation.isNotEmpty)
+                          Text(entry.explanation, style: GoogleFonts.handlee(fontSize: 16)),
+                        if (entry.imagePath != null) ...[
+                          const SizedBox(height: 15),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.file(
+                              File(entry.imagePath!),
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          child: Text(
-                            entries[index],
-                            style: const TextStyle(fontSize: 15),
-                          ),
-                        );
-                      },
+                        ],
+                      ],
                     ),
+                  ),
+                );
+              },
             ),
-          ],
-        ),
-      ),
     );
   }
 }
