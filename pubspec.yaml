@@ -30,6 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  just_audio: ^0.9.41
+  audio_session: ^0.1.7
+
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -60,12 +64,25 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
+
 flutter:
 
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
+# The following line ensures that the Material Icons font is
+# included with your application, so that you can use the icons in
+# the material Icons class.
+
   uses-material-design: true
+
+  assets:
+    - assets/music/piano.mp3.mp3
+    - assets/music/focus.mp3.mp3
+    - assets/music/meditation.mp3.mp3
+    - assets/music/ambient.mp3.mp3
+    - assets/music/sleep.mp3.mp3
+    - assets/music/relaxing.mp3.mp3
+
+
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -96,4 +113,4 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+  # see https://flutter.dev/to/font-from-package 

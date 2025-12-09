@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-// Sayfa importları
-import '../mood/mood_page.dart';
 import '../auth/login_page.dart';
-import '../music/music_page.dart';
 import '../diary/diary_page.dart';
 import '../diary/diary_provider.dart';
+import '../mood/mood_page.dart';
+import '../music/music_page.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -27,87 +26,100 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
+            colors: [Color(0xFFFFE6EF), Color(0xFFFFF6FB)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFFFE6EF), Color(0xFFFFF6FB)],
           ),
         ),
-        child: Stack(
-          children: [
-            const Positioned(top: -10, left: -10, child: Opacity(opacity: 0.1, child: Text("🌸", style: TextStyle(fontSize: 100)))),
-            const Positioned(top: 100, right: -20, child: Opacity(opacity: 0.1, child: Text("📊", style: TextStyle(fontSize: 80)))),
-            const Positioned(bottom: 50, left: -10, child: Opacity(opacity: 0.1, child: Text("✨", style: TextStyle(fontSize: 90)))),
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                children: [
+                  _buildHeader(context),
+                  const SizedBox(height: 20),
 
-            SafeArea(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 480),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                    child: ListView(
-                      children: [
-                        _buildHeader(context),
-                        const SizedBox(height: 20),
+                  // PREMIUM GRAFIK KARTI
+                  _buildStackedTimelineCard(diaryEntries),
+                  const SizedBox(height: 24),
 
-                        // ⭐ YENİ DİLİMLİ GRAFİK KARTI
-                        _buildStackedTimelineCard(diaryEntries),
-
-                        const SizedBox(height: 20),
-                        
-                        _buildFeatureCard(
-                          context: context,
-                          title: "Müzik Dinle",
-                          badge: "🎧",
-                          color: const Color(0xFFE1BEE7),
-                          icon: Icons.headphones,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MusicPage())),
-                        ),
-                        const SizedBox(height: 15),
-                        _buildFeatureCard(
-                          context: context,
-                          title: "Günlük Yaz",
-                          badge: "📝",
-                          color: const Color(0xFFFFF3CD),
-                          icon: Icons.edit_note,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DiaryPage())),
-                        ),
-                        const SizedBox(height: 15),
-                        _buildFeatureCard(
-                          context: context,
-                          title: "Mood Kaydet",
-                          badge: "💚",
-                          color: const Color(0xFFC8E6C9),
-                          icon: Icons.mood,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MoodPage())),
-                        ),
-
-                        const SizedBox(height: 30),
-                        const Center(child: Text("Kendine iyi bak 💜", style: TextStyle(color: Colors.grey))),
-                        const SizedBox(height: 20),
-                      ],
+                  _buildFeatureCard(
+                    context: context,
+                    title: "Müzik Dinle",
+                    badge: "🎧",
+                    color: const Color(0xFFE1BEE7),
+                    icon: Icons.headphones,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MusicPage()),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 14),
+
+                  _buildFeatureCard(
+                    context: context,
+                    title: "Günlük Yaz",
+                    badge: "📝",
+                    color: const Color(0xFFFFF3CD),
+                    icon: Icons.edit_note,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const DiaryPage()),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  _buildFeatureCard(
+                    context: context,
+                    title: "Mood Kaydet",
+                    badge: "💚",
+                    color: const Color(0xFFC8E6C9),
+                    icon: Icons.mood,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MoodPage()),
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
+                  const Center(
+                    child: Text(
+                      "Bugün kendine nazik ol 🐾",
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
+  // HEADER ------------------------------------------------
   Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text("EmotionCare", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.purple)),
+        const Text(
+          "EmotionCare",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.purple,
+          ),
+        ),
         IconButton(
           icon: const Icon(Icons.logout, color: Colors.purpleAccent),
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const LoginPage()),
-              (route) => false,
+              MaterialPageRoute(builder: (_) => const LoginPage()),
+              (_) => false,
             );
           },
         ),
@@ -115,215 +127,215 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     );
   }
 
-  // --- ⭐ WIDGET: DİLİMLİ (STACKED) GRAFİK ---
+  // PREMIUM GRAFIK ---------------------------------------
   Widget _buildStackedTimelineCard(List<dynamic> allEntries) {
     int daysToShow = _selectedPeriod == 'Haftalık' ? 7 : 30;
     final now = DateTime.now();
-    
-    // Günleri oluştur
-    List<DateTime> datesToShow = List.generate(daysToShow, (index) {
-      return now.subtract(Duration(days: (daysToShow - 1) - index));
+
+    List<DateTime> dates = List.generate(daysToShow, (i) {
+      return now.subtract(Duration(days: daysToShow - 1 - i));
     });
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [Color(0xFFE3F2FD), Color(0xFFBBDEFB)]),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [BoxShadow(color: Colors.blue.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5))],
+        gradient:
+            const LinearGradient(colors: [Color(0xFFE3F2FD), Color(0xFFBBDEFB)]),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Başlık ve filtre
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("Duygu Dağılımı", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
+              const Text(
+                "Duygu Dağılımı",
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey),
+              ),
               Container(
-                decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(15)),
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.white54,
+                  borderRadius: BorderRadius.circular(18),
+                ),
                 child: Row(
                   children: [
                     _buildFilterButton("Haftalık"),
                     _buildFilterButton("Aylık"),
                   ],
                 ),
-              )
+              ),
             ],
           ),
-          
-          const SizedBox(height: 10),
-          const Text("Çubukların renkleri o günkü hislerini gösterir.", style: TextStyle(fontSize: 12, color: Colors.black54)),
-          const SizedBox(height: 30),
 
+          const SizedBox(height: 12),
+          const Text(
+            "Her çubuk o güne ait duygu kayıtlarını gösterir ✨",
+            style: TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+          const SizedBox(height: 20),
+
+          // ÇUBUK GRAFİK
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            reverse: true, // Sağdan başla
-            child: SizedBox(
-              height: 180, 
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: datesToShow.map((date) {
-                  
-                  // O güne ait TÜM kayıtları bul
-                  var entriesForDay = _findEntriesForDate(allEntries, date);
-                  bool hasData = entriesForDay.isNotEmpty;
-                  
-                  String dayLabel = _selectedPeriod == 'Haftalık'
-                      ? DateFormat('E', 'tr_TR').format(date)
-                      : DateFormat('d', 'tr_TR').format(date);
-                  
-                  String fullDate = DateFormat('d MMMM', 'tr_TR').format(date);
+            child: Row(
+              children: dates.map((date) {
+                var entries = _findEntriesForDate(allEntries, date);
 
-                  // Tooltip metnini oluştur (Örn: "2 Mutlu, 1 Stresli")
-                  String tooltipText = "$fullDate\n";
-                  if (!hasData) {
-                    tooltipText += "Veri Yok";
-                  } else {
-                     Map<String, int> counts = {};
-                     for (var e in entriesForDay) {
-                       counts[e.moodLabel] = (counts[e.moodLabel] ?? 0) + 1;
-                     }
-                     counts.forEach((key, value) {
-                       tooltipText += "$key: $value\n";
-                     });
-                  }
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        // --- DİLİMLİ ÇUBUK ---
-                        Tooltip(
-                          message: tooltipText.trim(),
-                          triggerMode: TooltipTriggerMode.tap,
-                          child: Container(
-                            width: 16,
-                            height: 120, // Çubuk yüksekliği sabit
-                            decoration: BoxDecoration(
-                              color: Colors.white38, // Arka plan (boşsa gri görünür)
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: hasData 
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: Column(
+                    children: [
+                      Tooltip(
+                        message: _buildTooltip(date, entries),
+                        triggerMode: TooltipTriggerMode.tap,
+                        child: Container(
+                          width: 18,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color:
+                                entries.isEmpty ? Colors.white70 : Colors.transparent,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: entries.isEmpty
+                              ? null
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
                                   child: Column(
-                                    children: entriesForDay.map((entry) {
-                                      // Her bir kayıt için eşit parça
-                                      // (Örn: 3 kayıt varsa her biri yüksekliğin 1/3'ü)
+                                    children: entries.map((e) {
                                       return Expanded(
                                         child: Container(
-                                          color: _getMoodColor(entry.moodLabel),
+                                          color: _getMoodColor(e.moodLabel),
                                         ),
                                       );
                                     }).toList(),
                                   ),
-                                )
-                              : null, // Veri yoksa boş kalır
-                          ),
+                                ),
                         ),
-                        
-                        const SizedBox(height: 10),
-
-                        Text(
-                          dayLabel, 
-                          style: TextStyle(
-                            fontSize: 12, 
-                            fontWeight: FontWeight.bold, 
-                            color: date.day == now.day ? Colors.blueAccent : Colors.blueGrey
-                          )
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        DateFormat(_selectedPeriod == 'Haftalık' ? 'E' : 'd', 'tr_TR')
+                            .format(date),
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ),
-          
-          const SizedBox(height: 15),
-          // Renk Açıklamaları (Mini Legend)
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                 _buildLegendItem("Mutlu", Colors.orange),
-                 _buildLegendItem("Stresli", Colors.red),
-                 _buildLegendItem("Sakin", Colors.green),
-                 _buildLegendItem("Üzgün", Colors.blue),
-                 _buildLegendItem("Yorgun", Colors.brown),
-                 _buildLegendItem("Enerjik", Colors.purple),
-              ],
-            ),
-          )
+
+          const SizedBox(height: 14),
+
+          // Mini Legend
+          Row(
+            children: [
+              _legend("Mutlu", Colors.orange),
+              _legend("Stresli", Colors.red),
+              _legend("Sakin", Colors.green),
+              _legend("Üzgün", Colors.blue),
+              _legend("Enerjik", Colors.purple),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildLegendItem(String label, Color color) {
+  String _buildTooltip(DateTime date, List<dynamic> entries) {
+    String result = DateFormat("d MMMM", "tr_TR").format(date) + "\n";
+
+    if (entries.isEmpty) return result + "Veri Yok";
+
+    Map<String, int> count = {};
+    for (var e in entries) {
+      count[e.moodLabel] = (count[e.moodLabel] ?? 0) + 1;
+    }
+
+    count.forEach((key, value) {
+      result += "$key: $value\n";
+    });
+
+    return result.trim();
+  }
+
+  Widget _legend(String label, Color color) {
     return Padding(
-      padding: const EdgeInsets.only(right: 12.0),
+      padding: const EdgeInsets.only(right: 10),
       child: Row(
         children: [
-          Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
           const SizedBox(width: 4),
-          Text(label, style: const TextStyle(fontSize: 10, color: Colors.black54)),
+          Text(label, style: const TextStyle(fontSize: 10)),
         ],
       ),
     );
   }
 
-  Widget _buildFilterButton(String text) {
-    bool isSelected = _selectedPeriod == text;
+  // Filtre Butonları
+  Widget _buildFilterButton(String label) {
+    bool selected = _selectedPeriod == label;
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedPeriod = text;
-        });
-      },
+      onTap: () => setState(() => _selectedPeriod = label),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: isSelected ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)] : [],
+          color: selected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
-          text,
+          label,
           style: TextStyle(
-            fontSize: 13,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            color: isSelected ? Colors.blueAccent : Colors.blueGrey,
+            color: selected ? Colors.blueAccent : Colors.blueGrey,
+            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
       ),
     );
   }
 
-  // --- YARDIMCI FONKSİYONLAR ---
-
-  // O güne ait TÜM kayıtları listeler
-  List<dynamic> _findEntriesForDate(List<dynamic> entries, DateTime date) {
-    return entries.where((e) => 
-      e.date.year == date.year && 
-      e.date.month == date.month && 
-      e.date.day == date.day
-    ).toList();
-  }
-
+  // Duygu renkleri
   Color _getMoodColor(String mood) {
     switch (mood) {
-      case 'Mutlu': return Colors.orange;
-      case 'Sakin': return Colors.green;
-      case 'Üzgün': return Colors.blue;
-      case 'Stresli': return Colors.red;
-      case 'Yorgun': return Colors.brown;
-      case 'Enerjik': return Colors.purple;
-      default: return Colors.grey;
+      case "Mutlu":
+        return Colors.orange;
+      case "Sakin":
+        return Colors.green;
+      case "Üzgün":
+        return Colors.blue;
+      case "Stresli":
+        return Colors.red;
+      case "Enerjik":
+        return Colors.purple;
+      default:
+        return Colors.grey;
     }
   }
 
+  // Find entries for a specific date
+  List<dynamic> _findEntriesForDate(List<dynamic> allEntries, DateTime date) {
+    return allEntries.where((entry) {
+      return entry.date.year == date.year &&
+          entry.date.month == date.month &&
+          entry.date.day == date.day;
+    }).toList();
+  }
+
+  // Feature Kartı
   Widget _buildFeatureCard({
     required BuildContext context,
     required String title,
@@ -335,17 +347,32 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        height: 85,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10, offset: const Offset(0, 4))],
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            )
+          ],
         ),
         child: Row(
           children: [
-            Container(padding: const EdgeInsets.all(10), decoration: const BoxDecoration(color: Colors.white54, shape: BoxShape.circle), child: Icon(icon, color: Colors.black54)),
-            const SizedBox(width: 15),
-            Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+            CircleAvatar(
+              backgroundColor: Colors.white54,
+              child: Icon(icon, color: Colors.black54),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
             Text(badge, style: const TextStyle(fontSize: 20)),
           ],
         ),

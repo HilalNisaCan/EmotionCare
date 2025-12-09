@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/date_symbol_data_local.dart'; // Tarih hatası için
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-// 👇 BAŞLANGIÇ OLARAK LOGIN SAYFASINI ÇAĞIRIYORUZ
-import 'pages/auth/login_page.dart'; 
+// Sayfalar
+import 'pages/auth/login_page.dart';
+import 'pages/music/music_page.dart';
 
 void main() async {
-  // 👇 KIRMIZI EKRAN (Locale) HATASINI ÇÖZEN KOD
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('tr_TR', null); 
+
+  // Firebase başlat
+  await Firebase.initializeApp();
+
+  // Tarih formatları (tr_TR)
+  await initializeDateFormatting('tr_TR', null);
 
   runApp(
-    const ProviderScope( // Riverpod Kapsayıcısı
+    const ProviderScope(
       child: MyApp(),
     ),
   );
@@ -26,13 +32,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EmotionCare',
+
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
         useMaterial3: true,
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
-      // 👇 İŞTE BURASI: Uygulama GİRİŞ EKRANI ile başlasın.
-      home: const LoginPage(), 
+
+      routes: {
+        '/music': (context) => const MusicPage(),
+      },
+
+      home: const LoginPage(),
     );
   }
 }
