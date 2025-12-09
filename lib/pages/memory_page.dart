@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-// 👇 KASAYI ÇAĞIRIYORUZ (Dosya yoluna dikkat et)
+// 👇 KASAYI ÇAĞIRIYORUZ
 import 'diary/diary_provider.dart'; 
 import 'diary/diary_page.dart';
 
@@ -27,13 +27,53 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
 
-  Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _selectedImage = File(image.path);
-      });
+  // ⭐ YENİ: Hem Galeri Hem Kamera Seçeneği
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      // Kamera izni verilmezse veya iptal edilirse hata vermemesi için
+      debugPrint("Resim seçilemedi: $e");
     }
+  }
+
+  // ⭐ YENİ: Seçim Menüsü (Alttan Açılan Pencere)
+  void _showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: Colors.purple),
+                title: const Text("Galeriden Seç"),
+                onTap: () {
+                  Navigator.pop(context); // Menüyü kapat
+                  _pickImage(ImageSource.gallery); // Galeriye git
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt, color: Colors.purple),
+                title: const Text("Fotoğraf Çek"),
+                onTap: () {
+                  Navigator.pop(context); // Menüyü kapat
+                  _pickImage(ImageSource.camera); // Kameraya git
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   // --- 💾 KAYIT İŞLEMİ ---
@@ -47,11 +87,10 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
     else if (widget.moodLabel == "Yorgun") emoji = "😴";
     else if (widget.moodLabel == "Enerjik") emoji = "⚡";
 
-    // 2. KASAYA EKLE (İşte burası eksikti!)
-    // Kullanıcının yazdığı explanation'ı buraya ekliyoruz
+    // 2. KASAYA EKLE
     ref.read(diaryProvider.notifier).addEntry(
       widget.moodLabel, 
-      widget.explanation, // Notu buraya ekledik
+      widget.explanation, 
       _selectedImage?.path, 
       emoji
     );
@@ -70,7 +109,6 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    // main.dart'ta yüklediğimiz için burada tekrar yüklemeye gerek yok
     String formattedDate = DateFormat('d MMMM yyyy', 'tr_TR').format(DateTime.now());
 
     return Scaffold(
@@ -92,13 +130,16 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
               ),
               child: Column(
                 children: [
+                  // ⭐ FOTOĞRAF ALANI (Tıklayınca Menü Açılır)
                   GestureDetector(
-                    onTap: _pickImage,
+                    onTap: _showImageSourceDialog, // Yeni fonksiyonu çağırıyor
                     child: Container(
                       height: 300,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(10), // Köşeleri yumuşattık
+                        border: Border.all(color: Colors.orange.withOpacity(0.3), width: 2), // Çerçeve ekledik
                         image: _selectedImage != null
                             ? DecorationImage(image: FileImage(_selectedImage!), fit: BoxFit.cover)
                             : null,
@@ -107,9 +148,10 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
                           ? Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.add_a_photo, size: 50, color: Colors.grey),
+                                Icon(Icons.add_a_photo, size: 50, color: Colors.orange.shade300),
                                 const SizedBox(height: 10),
-                                Text("Fotoğraf Seç", style: GoogleFonts.poppins(color: Colors.grey)),
+                                Text("Fotoğraf Ekle", style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.bold)),
+                                Text("(Kamera veya Galeri)", style: GoogleFonts.poppins(color: Colors.grey, fontSize: 12)),
                               ],
                             )
                           : null,
