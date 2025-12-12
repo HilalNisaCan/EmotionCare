@@ -1,13 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'diary/diary_provider.dart';
+class ActivityTimerPage extends ConsumerStatefulWidget {
+  final String title;
+  final String description;
+  final int durationMinutes;
+  final Color color;
+  final IconData icon;
 
-class ActivityTimerPage extends StatefulWidget {
-  final String title;      // Örn: "Kitap Okuma Saati"
-  final String description; // Örn: "Sayfaların arasında kaybol..."
-  final int durationMinutes; // Örn: 15 dakika
-  final Color color;       // Örn: Colors.brown
-  final IconData icon;     // Örn: Icons.menu_book
+  /// 🔥 Yeni eklenen özellikler
+  final bool showSaveButton;   // Mood’dan geliyorsa true
+  final String mood;           // Günlüğe kaydedilecek mood
+  final String actionName;     // "Kitap okudu 📖" gibi
 
   const ActivityTimerPage({
     super.key,
@@ -16,13 +22,16 @@ class ActivityTimerPage extends StatefulWidget {
     required this.durationMinutes,
     required this.color,
     required this.icon,
+    required this.showSaveButton,
+    required this.mood,
+    required this.actionName,
   });
 
   @override
-  State<ActivityTimerPage> createState() => _ActivityTimerPageState();
+  ConsumerState<ActivityTimerPage> createState() => _ActivityTimerPageState();
 }
 
-class _ActivityTimerPageState extends State<ActivityTimerPage> {
+class _ActivityTimerPageState extends ConsumerState<ActivityTimerPage> {
   Timer? _timer;
   late int _remainingSeconds;
   bool _isRunning = false;
@@ -30,8 +39,7 @@ class _ActivityTimerPageState extends State<ActivityTimerPage> {
   @override
   void initState() {
     super.initState();
-    // Dakikayı saniyeye çeviriyoruz
-    _remainingSeconds = widget.durationMinutes * 60; 
+    _remainingSeconds = widget.durationMinutes * 60;
   }
 
   @override
@@ -48,6 +56,7 @@ class _ActivityTimerPageState extends State<ActivityTimerPage> {
       setState(() => _isRunning = true);
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (!mounted) return;
+
         setState(() {
           if (_remainingSeconds > 0) {
             _remainingSeconds--;
@@ -67,17 +76,30 @@ class _ActivityTimerPageState extends State<ActivityTimerPage> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text("Tebrikler! 🎉", style: GoogleFonts.poppins(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-        content: Text("${widget.title} aktivitesini başarıyla tamamladın. Kendinle gurur duy!", textAlign: TextAlign.center),
+        title: Text("Tebrikler! 🎉",
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center),
+        content: Text(
+          "${widget.title} aktivitesini tamamladın!",
+          textAlign: TextAlign.center,
+        ),
         actions: [
           Center(
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: widget.color),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: widget.color,
+              ),
               onPressed: () {
-                Navigator.pop(context); // Dialog kapat
-                Navigator.pop(context); // Sayfadan çık
+                // 🔥 Günlüğe kaydet sadece mood ekranından gelindiyse
+                if (widget.showSaveButton) {
+                  ref.read(diaryProvider.notifier).addEntry(
+                      widget.mood, widget.actionName, null, "⏳");
+                }
+
+                Navigator.pop(context);
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
-              child: const Text("Bitir", style: TextStyle(color: Colors.white)),
+              child: const Text("Tamam", style: TextStyle(color: Colors.white)),
             ),
           ),
         ],
@@ -93,13 +115,13 @@ class _ActivityTimerPageState extends State<ActivityTimerPage> {
 
   @override
   Widget build(BuildContext context) {
-    // İlerleme yüzdesi (Dairenin doluluğu için)
     double progress = _remainingSeconds / (widget.durationMinutes * 60);
 
     return Scaffold(
-      backgroundColor: widget.color.withOpacity(0.1), // Arka plan rengin soft hali
+      backgroundColor: widget.color.withOpacity(0.1),
       appBar: AppBar(
-        title: Text(widget.title, style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        title: Text(widget.title,
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         backgroundColor: widget.color,
         foregroundColor: Colors.white,
       ),
@@ -107,20 +129,22 @@ class _ActivityTimerPageState extends State<ActivityTimerPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // İkon ve Açıklama
             Icon(widget.icon, size: 60, color: widget.color),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Text(
                 widget.description,
-                style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey[700]),
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: Colors.grey[700],
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 50),
 
-            // SAYAÇ DAİRESİ
+            // Sayaç
             Stack(
               alignment: Alignment.center,
               children: [
@@ -137,7 +161,7 @@ class _ActivityTimerPageState extends State<ActivityTimerPage> {
                 Text(
                   _formatTime(_remainingSeconds),
                   style: GoogleFonts.poppins(
-                    fontSize: 40, 
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: widget.color,
                   ),
@@ -146,7 +170,6 @@ class _ActivityTimerPageState extends State<ActivityTimerPage> {
             ),
             const SizedBox(height: 50),
 
-            // BAŞLAT / DURDUR BUTONU
             ElevatedButton.icon(
               onPressed: _toggleTimer,
               icon: Icon(_isRunning ? Icons.pause : Icons.play_arrow),
@@ -154,9 +177,11 @@ class _ActivityTimerPageState extends State<ActivityTimerPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.color,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                textStyle: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 40, vertical: 15),
                 shape: const StadiumBorder(),
+                textStyle:
+                    GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ],

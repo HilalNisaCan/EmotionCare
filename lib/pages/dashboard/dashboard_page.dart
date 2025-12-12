@@ -41,25 +41,28 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   _buildHeader(context),
                   const SizedBox(height: 20),
 
-                  // PREMIUM GRAFIK KARTI
                   _buildStackedTimelineCard(diaryEntries),
                   const SizedBox(height: 24),
+_buildFeatureCard(
+  title: "Müzik Dinle",
+  badge: "🎧",
+  color: const Color(0xFFE1BEE7),
+  icon: Icons.headphones,
+  onTap: () => Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => MusicPage(
+        showSaveButton: false,  // 🔥 Ana sayfadan açılınca kaydet butonu YOK
+        mood: "",
+        actionName: "",
+      ),
+    ),
+  ),
+),
 
-                  _buildFeatureCard(
-                    context: context,
-                    title: "Müzik Dinle",
-                    badge: "🎧",
-                    color: const Color(0xFFE1BEE7),
-                    icon: Icons.headphones,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const MusicPage()),
-                    ),
-                  ),
                   const SizedBox(height: 14),
 
                   _buildFeatureCard(
-                    context: context,
                     title: "Günlük Yaz",
                     badge: "📝",
                     color: const Color(0xFFFFF3CD),
@@ -72,7 +75,6 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   const SizedBox(height: 14),
 
                   _buildFeatureCard(
-                    context: context,
                     title: "Mood Kaydet",
                     badge: "💚",
                     color: const Color(0xFFC8E6C9),
@@ -83,14 +85,13 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 50),
                   const Center(
                     child: Text(
                       "Bugün kendine nazik ol 🐾",
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ),
-                  const SizedBox(height: 30),
                 ],
               ),
             ),
@@ -100,7 +101,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     );
   }
 
-  // HEADER ------------------------------------------------
+  // ---------------------------------------
+  // HEADER
+  // ---------------------------------------
   Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,7 +111,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
         const Text(
           "EmotionCare",
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
             color: Colors.purple,
           ),
@@ -127,8 +130,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     );
   }
 
-  // PREMIUM GRAFIK ---------------------------------------
-  Widget _buildStackedTimelineCard(List<dynamic> allEntries) {
+  // ---------------------------------------
+  // PREMIUM TIMELINE MOOD GRAPH
+  // ---------------------------------------
+  Widget _buildStackedTimelineCard(List<DiaryEntry> allEntries) {
     int daysToShow = _selectedPeriod == 'Haftalık' ? 7 : 30;
     final now = DateTime.now();
 
@@ -139,13 +144,15 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient:
-            const LinearGradient(colors: [Color(0xFFE3F2FD), Color(0xFFBBDEFB)]),
+        gradient: const LinearGradient(colors: [
+          Color(0xFFE3F2FD),
+          Color(0xFFBBDEFB),
+        ]),
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.2),
-            blurRadius: 10,
+            color: Colors.blue.withOpacity(0.15),
+            blurRadius: 12,
             offset: const Offset(0, 5),
           ),
         ],
@@ -153,21 +160,22 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Başlık ve filtre
+          // Top Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
                 "Duygu Dağılımı",
                 style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueGrey),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey,
+                ),
               ),
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.white54,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: Row(
@@ -176,18 +184,19 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                     _buildFilterButton("Aylık"),
                   ],
                 ),
-              ),
+              )
             ],
           ),
 
           const SizedBox(height: 12),
           const Text(
-            "Her çubuk o güne ait duygu kayıtlarını gösterir ✨",
+            "Günlere göre duygu değişimini gösterir ✨",
             style: TextStyle(fontSize: 12, color: Colors.black54),
           ),
+
           const SizedBox(height: 20),
 
-          // ÇUBUK GRAFİK
+          // GRAPH
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -202,11 +211,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                         message: _buildTooltip(date, entries),
                         triggerMode: TooltipTriggerMode.tap,
                         child: Container(
-                          width: 18,
-                          height: 120,
+                          width: 20,
+                          height: 130,
                           decoration: BoxDecoration(
                             color:
-                                entries.isEmpty ? Colors.white70 : Colors.transparent,
+                                entries.isEmpty ? Colors.white : Colors.transparent,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: entries.isEmpty
@@ -227,7 +236,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        DateFormat(_selectedPeriod == 'Haftalık' ? 'E' : 'd', 'tr_TR')
+                        DateFormat(
+                                _selectedPeriod == 'Haftalık' ? 'E' : 'd', 'tr_TR')
                             .format(date),
                         style: const TextStyle(
                             fontSize: 12, fontWeight: FontWeight.bold),
@@ -240,45 +250,89 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
           ),
 
           const SizedBox(height: 14),
-
-          // Mini Legend
-          Row(
-            children: [
-              _legend("Mutlu", Colors.orange),
-              _legend("Stresli", Colors.red),
-              _legend("Sakin", Colors.green),
-              _legend("Üzgün", Colors.blue),
-              _legend("Enerjik", Colors.purple),
-            ],
-          ),
+          _buildLegendRow(),
         ],
       ),
     );
   }
 
-  String _buildTooltip(DateTime date, List<dynamic> entries) {
+  // ---------------------------------------
+  // Tooltip Text
+  // ---------------------------------------
+  String _buildTooltip(DateTime date, List<DiaryEntry> entries) {
     String result = DateFormat("d MMMM", "tr_TR").format(date) + "\n";
 
-    if (entries.isEmpty) return result + "Veri Yok";
+    if (entries.isEmpty) return result + "Veri yok";
 
     Map<String, int> count = {};
+
     for (var e in entries) {
       count[e.moodLabel] = (count[e.moodLabel] ?? 0) + 1;
     }
 
-    count.forEach((key, value) {
-      result += "$key: $value\n";
-    });
+    count.forEach((key, value) => result += "$key: $value\n");
 
     return result.trim();
   }
 
+  // ---------------------------------------
+  // Mood Colors
+  // ---------------------------------------
+  Color _getMoodColor(String mood) {
+    switch (mood) {
+      case "Mutlu":
+        return Colors.orange;
+      case "Sakin":
+        return Colors.green;
+      case "Üzgün":
+        return Colors.blue;
+      case "Stresli":
+        return Colors.red;
+      case "Enerjik":
+        return Colors.purple;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  // ---------------------------------------
+  // Find entries for specific date
+  // ---------------------------------------
+  List<DiaryEntry> _findEntriesForDate(
+      List<DiaryEntry> allEntries, DateTime date) {
+    return allEntries.where((entry) {
+      return entry.date.year == date.year &&
+          entry.date.month == date.month &&
+          entry.date.day == date.day;
+    }).toList();
+  }
+
+  // ---------------------------------------
+  // Legend
+  // ---------------------------------------
+  Widget _buildLegendRow() {
+    return Row(
+      children: [
+        _legend("Mutlu", Colors.orange),
+        _legend("Stresli", Colors.red),
+        _legend("Sakin", Colors.green),
+        _legend("Üzgün", Colors.blue),
+        _legend("Enerjik", Colors.purple),
+      ],
+    );
+  }
+
   Widget _legend(String label, Color color) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.only(right: 12),
       child: Row(
         children: [
-          Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Container(
+            width: 8,
+            height: 8,
+            decoration:
+                BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
           const SizedBox(width: 4),
           Text(label, style: const TextStyle(fontSize: 10)),
         ],
@@ -286,9 +340,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     );
   }
 
-  // Filtre Butonları
+  // ---------------------------------------
+  // Filter Buttons
+  // ---------------------------------------
   Widget _buildFilterButton(String label) {
     bool selected = _selectedPeriod == label;
+
     return GestureDetector(
       onTap: () => setState(() => _selectedPeriod = label),
       child: Container(
@@ -308,36 +365,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     );
   }
 
-  // Duygu renkleri
-  Color _getMoodColor(String mood) {
-    switch (mood) {
-      case "Mutlu":
-        return Colors.orange;
-      case "Sakin":
-        return Colors.green;
-      case "Üzgün":
-        return Colors.blue;
-      case "Stresli":
-        return Colors.red;
-      case "Enerjik":
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  // Find entries for a specific date
-  List<dynamic> _findEntriesForDate(List<dynamic> allEntries, DateTime date) {
-    return allEntries.where((entry) {
-      return entry.date.year == date.year &&
-          entry.date.month == date.month &&
-          entry.date.day == date.day;
-    }).toList();
-  }
-
-  // Feature Kartı
+  // ---------------------------------------
+  // Feature Card
+  // ---------------------------------------
   Widget _buildFeatureCard({
-    required BuildContext context,
     required String title,
     required String badge,
     required Color color,
@@ -370,7 +401,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
             Text(badge, style: const TextStyle(fontSize: 20)),

@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 // Sayfalar
 import 'pages/auth/login_page.dart';
+import 'pages/dashboard/dashboard_page.dart';
 import 'pages/music/music_page.dart';
 
 void main() async {
@@ -33,16 +34,41 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'EmotionCare',
 
+      // ✨ LIGHT TEMA
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: const Color(0xFFFFE6EF),
         useMaterial3: true,
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
 
+      // 🌙 DARK TEMA
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0F0F12),
+        useMaterial3: true,
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.purple,
+          secondary: Colors.tealAccent,
+        ),
+      ),
+
+      // 🔥 Sistem temasına göre otomatik
+      themeMode: ThemeMode.system,
+
+      // ROUTES
       routes: {
-        '/music': (context) => const MusicPage(),
+        '/login': (context) => const LoginPage(),
+        '/dashboard': (context) => const DashboardPage(),
+      '/music': (context) => const MusicPage(
+      showSaveButton: false,
+      mood: "",
+      actionName: "",
+),
       },
 
+      // 📌 İlk açılış LoginPage
       home: const LoginPage(),
     );
   }
