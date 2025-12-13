@@ -4,17 +4,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'firebase_options.dart';
+
 // Sayfalar
 import 'pages/auth/login_page.dart';
 import 'pages/music/music_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Firebase başlat
-  await Firebase.initializeApp();
+  // 🔥 Firebase'i DOĞRU başlat
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  // Tarih formatları (tr_TR)
+  // 🇹🇷 Tarih formatları
   await initializeDateFormatting('tr_TR', null);
 
   runApp(
@@ -32,17 +36,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EmotionCare',
-
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
         useMaterial3: true,
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
-
       routes: {
         '/music': (context) => const MusicPage(),
       },
-
       home: const LoginPage(),
     );
   }
