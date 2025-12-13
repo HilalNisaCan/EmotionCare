@@ -19,12 +19,11 @@ class _AiChatPageState extends State<AiChatPage> {
   @override
   void initState() {
     super.initState();
-
     _messages.add(
       ChatMessage(
         role: "assistant",
         content:
-            "Merhaba 🌙\nBugün nasılsın? İstersen bana içinden geçenleri anlatabilirsin.",
+            "Merhaba 🌙\nBugün nasılsın?\nİstersen bana içinden geçenleri anlatabilirsin.",
       ),
     );
   }
@@ -54,23 +53,35 @@ class _AiChatPageState extends State<AiChatPage> {
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        padding: const EdgeInsets.all(14),
         margin: const EdgeInsets.symmetric(vertical: 6),
-        constraints: const BoxConstraints(maxWidth: 280),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        constraints: const BoxConstraints(maxWidth: 300),
         decoration: BoxDecoration(
-          color: isUser ? Colors.purple.shade100 : Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: isUser
+              ? const Color(0xFFE1BEE7)
+              : Colors.white.withOpacity(0.85),
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(18),
+            topRight: const Radius.circular(18),
+            bottomLeft:
+                isUser ? const Radius.circular(18) : Radius.zero,
+            bottomRight:
+                isUser ? Radius.zero : const Radius.circular(18),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black12,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             )
           ],
         ),
         child: Text(
           msg.content,
-          style: GoogleFonts.poppins(fontSize: 14),
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: Colors.black87,
+          ),
         ),
       ),
     );
@@ -79,13 +90,26 @@ class _AiChatPageState extends State<AiChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF6E8FF),
+      backgroundColor: const Color(0xFFF7ECFF),
       appBar: AppBar(
-        backgroundColor: Colors.purpleAccent,
+        elevation: 0,
+        backgroundColor: const Color(0xFFBB3FDD),
+        centerTitle: true,
         title: Text(
-          "Dertleşme Asistanı 🌙",
-          style: GoogleFonts.poppins(),
+          "Hadi Biraz Sohbet Edelim 🌙",
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+           color: Colors.white,
+          ),
         ),
+       leading: IconButton(
+       icon: const Icon(
+       Icons.arrow_back_ios_new_rounded,
+       color: Colors.white, // ⬅️
+      ),
+      onPressed: () => Navigator.pop(context),
+      ),
       ),
       body: Column(
         children: [
@@ -96,11 +120,19 @@ class _AiChatPageState extends State<AiChatPage> {
               itemBuilder: (_, i) => _buildBubble(_messages[i]),
             ),
           ),
+
           if (_isTyping)
-            const Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: Text("Asistan yazıyor…"),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                "“Cevap yazıyorum…",
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.black45,
+                ),
+              ),
             ),
+
           _buildInput(),
         ],
       ),
@@ -110,18 +142,23 @@ class _AiChatPageState extends State<AiChatPage> {
   Widget _buildInput() {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
         child: Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _controller,
+                minLines: 1,
+                maxLines: 4,
                 decoration: InputDecoration(
-                  hintText: "Bir şeyler yaz…",
+                  hintText: "İçinden geçen ne varsa yazabilirsin…",
+                  hintStyle: GoogleFonts.poppins(fontSize: 13),
                   filled: true,
                   fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 12),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(24),
                     borderSide: BorderSide.none,
                   ),
                 ),
@@ -131,8 +168,9 @@ class _AiChatPageState extends State<AiChatPage> {
             GestureDetector(
               onTap: _isTyping ? null : _sendMessage,
               child: CircleAvatar(
-                backgroundColor: Colors.purpleAccent,
-                child: const Icon(Icons.send, color: Colors.white),
+                radius: 22,
+                backgroundColor: const Color(0xFFBB3FDD),
+                child: const Icon(Icons.send_rounded, color: Colors.white),
               ),
             ),
           ],
