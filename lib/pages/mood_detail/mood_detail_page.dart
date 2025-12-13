@@ -28,7 +28,6 @@ class _MoodDetailPageState extends ConsumerState<MoodDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final notifier = ref.read(moodDetailProvider.notifier);
 
     return Scaffold(
@@ -36,135 +35,163 @@ class _MoodDetailPageState extends ConsumerState<MoodDetailPage> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFFFD6E8),
-              Color(0xFFF5C9FF),
+              Color(0xFFFFEDF6),
+              Color(0xFFEAD9FF),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // 🔙 Geri + Başlık
-                Row(
+          child: Column(
+            children: [
+              /// 🔙 HEADER
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back_ios, color: Colors.purple),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: Color(0xFF8E24AA),
+                        size: 20,
+                      ),
                       onPressed: () => Navigator.pop(context),
                     ),
+                    const SizedBox(width: 4),
                     Text(
                       widget.label,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.purple.shade800,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF6A1B9A),
                       ),
                     ),
                   ],
                 ),
+              ),
 
-                const SizedBox(height: 20),
+              /// 🔽 CONTENT
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
 
-                // 🟣 Emoji Kartı
-                Center(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.purple.withOpacity(0.2),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
+                      /// EMOJI
+                      Container(
+                        padding: const EdgeInsets.all(26),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.purple.withOpacity(0.15),
+                              blurRadius: 18,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Text(
-                      widget.emoji,
-                      style: const TextStyle(fontSize: 70),
-                    ),
-                  ),
-                ),
+                        child: Text(
+                          widget.emoji,
+                          style: const TextStyle(fontSize: 60),
+                        ),
+                      ),
 
-                const SizedBox(height: 30),
+                      const SizedBox(height: 26),
 
-                // ✨ Soru
-                Text(
-                  "Neden böyle hissediyorsun?",
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.purple.shade700,
-                  ),
-                ),
-                const SizedBox(height: 12),
+                      /// QUESTION
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Neden böyle hissediyorsun?",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF6A1B9A),
+                          ),
+                        ),
+                      ),
 
-                // 📝 Açıklama Kutusu
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      )
+                      const SizedBox(height: 10),
+
+                      /// INPUT
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 10,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: TextField(
+                            controller: _explanationController,
+                            maxLines: null,
+                            expands: true,
+                            onChanged: notifier.updateExplanation,
+                            decoration: InputDecoration(
+                              hintText:
+                                  "Duygularını burada açıklayabilirsin...",
+                              hintStyle: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 13,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.all(16),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
                     ],
                   ),
-                  child: TextField(
-                    controller: _explanationController,
-                    maxLines: 6,
-                    onChanged: (text) => notifier.updateExplanation(text),
-                    decoration: InputDecoration(
-                      hintText: "Duygularını burada açıklayabilirsin...",
-                      hintStyle: TextStyle(color: Colors.grey.shade500),
-                      border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                ),
+              ),
+
+              /// 🔥 BUTTON (SABİT)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      notifier.submitMood();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              SuggestionsPage(moodLabel: widget.label),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFBB3FDD), // KOYU PEMBE
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: const Text(
+                      "Gönder ve Önerileri Gör",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 35),
-
-                // 🎯 Gönder Butonu
-               ElevatedButton(
-  onPressed: () {
-    notifier.submitMood();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SuggestionsPage(moodLabel: widget.label),
-      ),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.purple,
-    padding: const EdgeInsets.symmetric(vertical: 16),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18),
-    ),
-    elevation: 4,
-  ),
-  child: const Text(
-    "Gönder ve Önerileri Gör",
-    style: TextStyle(
-      fontSize: 18,
-      fontWeight: FontWeight.bold,
-      color: Colors.white, // 🤍 BEYAZ YAZI
-    ),
-  ),
-),
-
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

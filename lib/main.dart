@@ -15,8 +15,8 @@ import 'pages/music/music_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ (PERF) GoogleFonts runtime fetching kapat (kasmanın ana şüphelisi)
-  GoogleFonts.config.allowRuntimeFetching = false;
+  // ✅ Google Fonts runtime fetching AÇIK
+  GoogleFonts.config.allowRuntimeFetching = true;
 
   // 🔐 ENV
   await dotenv.load(fileName: ".env");
@@ -35,6 +35,7 @@ Future<void> main() async {
     ),
   );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

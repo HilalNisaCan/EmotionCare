@@ -121,10 +121,11 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final MaterialColor purple = Colors.purple;
+ @override
+ Widget build(BuildContext context) {
+ final theme = Theme.of(context);
+ final Color primaryPurple = const Color.fromARGB(255, 187, 63, 221);
+
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFE6EF),
@@ -141,8 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                   'EmotionCare',
                   textAlign: TextAlign.center,
                   style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: purple.shade900,
+                  fontWeight: FontWeight.bold,
+                  color: primaryPurple,
                   ),
                 ),
 
@@ -152,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                   'Duygularını takip et, kendine iyi bak 💜',
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: purple.shade300,
+                  color: primaryPurple.withOpacity(0.6),
                   ),
                 ),
 
@@ -246,35 +247,37 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 8),
 
-                        SizedBox(
-                          height: 48,
-                          child: ElevatedButton(
-                            onPressed: _loading ? null : _signIn,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: purple.shade300,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: _loading
-                                ? const SizedBox(
-                                    width: 22,
-                                    height: 22,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Text(
-                                    'Giriş yap',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                          ),
-                        ),
+                      SizedBox(
+  height: 48,
+  child: ElevatedButton(
+    onPressed: _loading ? null : _signIn,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: primaryPurple,
+      foregroundColor: Colors.white,
+      disabledBackgroundColor: Colors.grey.shade300,
+      disabledForegroundColor: Colors.white70,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+    ),
+    child: _loading
+        ? const SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            ),
+          )
+        : const Text(
+            'Giriş yap',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+  ),
+),
 
                         const SizedBox(height: 16),
 
