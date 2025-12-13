@@ -71,15 +71,15 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
   }
 
   void _saveMemory() {
-    ref.read(diaryProvider.notifier).addEntry(
-          widget.mood,
-          widget.actionName,
-          _selectedImage?.path,
-          "📸",
-        );
+  ref.read(diaryProvider.notifier).addEntry(
+        widget.mood,
+        widget.explanation, 
+        _selectedImage?.path,
+        "📸",
+      );
 
-    Navigator.popUntil(context, (route) => route.isFirst);
-  }
+  Navigator.popUntil(context, (route) => route.isFirst);
+}
 
   @override
   Widget build(BuildContext context) {
