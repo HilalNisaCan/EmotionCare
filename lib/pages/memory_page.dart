@@ -5,14 +5,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-import 'diary/diary_page.dart';
-import 'diary/diary_provider.dart';    
+import 'diary/diary_provider.dart';
 
 class MemoryPage extends ConsumerStatefulWidget {
-  final bool showSaveButton;    // Mood’dan mı geldi?
-  final String mood;            // Mutlu, Üzgün vs.
-  final String actionName;      // Günlüğe yazılacak metin
-  final String explanation;     // Mood açıklaması (zaten vardı)
+  final bool showSaveButton;
+  final String mood;
+  final String actionName;
+  final String explanation;
 
   const MemoryPage({
     super.key,
@@ -41,31 +40,36 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (c) => SafeArea(
-        child: Wrap(children: [
-          ListTile(
-            leading: const Icon(Icons.photo, color: Colors.orange),
-            title: const Text("Galeriden Seç"),
-            onTap: () {
-              Navigator.pop(context);
-              _pick(ImageSource.gallery);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.camera_alt, color: Colors.orange),
-            title: const Text("Fotoğraf Çek"),
-            onTap: () {
-              Navigator.pop(context);
-              _pick(ImageSource.camera);
-            },
-          ),
-        ]),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading:
+                  const Icon(Icons.photo_library, color: Color(0xFF6A6FD6)),
+              title: const Text("Galeriden Seç"),
+              onTap: () {
+                Navigator.pop(context);
+                _pick(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading:
+                  const Icon(Icons.camera_alt, color: Color(0xFF6A6FD6)),
+              title: const Text("Fotoğraf Çek"),
+              onTap: () {
+                Navigator.pop(context);
+                _pick(ImageSource.camera);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  // 📌 KAYDETME
   void _saveMemory() {
     ref.read(diaryProvider.notifier).addEntry(
           widget.mood,
@@ -83,28 +87,35 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
         DateFormat('d MMMM yyyy', 'tr_TR').format(DateTime.now());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF3E0),
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
-        title: Text("Anı Yakala",
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.orangeAccent,
+        elevation: 0,
+        backgroundColor: const Color(0xFF6A6FD6),
+        foregroundColor: Colors.white,
+        title: Text(
+          "Anı Yakala",
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
       ),
 
-      // 📌 SADECE MOOD SAYFASINDAN GELİNCE BUTON ÇIKAR
       bottomNavigationBar: widget.showSaveButton
           ? Padding(
-              padding: const EdgeInsets.all(18.0),
+              padding: const EdgeInsets.all(18),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  minimumSize: const Size(double.infinity, 55),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
+                  backgroundColor: const Color(0xFF6A6FD6),
+                  minimumSize: const Size(double.infinity, 54),
+                  shape: const StadiumBorder(),
                 ),
                 onPressed: _saveMemory,
-                child: const Text(
+                child: Text(
                   "Kaydet ve Ana Sayfaya Dön",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             )
@@ -112,71 +123,104 @@ class _MemoryPageState extends ConsumerState<MemoryPage> {
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: Column(children: [
-          // FOTO ALANI
-          GestureDetector(
-            onTap: _showImagePickerMenu,
-            child: Container(
-              height: 300,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.orange.withOpacity(0.3)),
-                image: _selectedImage != null
-                    ? DecorationImage(
-                        image: FileImage(_selectedImage!),
-                        fit: BoxFit.cover,
+        child: Column(
+          children: [
+            /// 📸 FOTOĞRAF ALANI
+            GestureDetector(
+              onTap: _showImagePickerMenu,
+              child: Container(
+                height: 280,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F1FF),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFF6A6FD6).withOpacity(0.25),
+                  ),
+                  image: _selectedImage != null
+                      ? DecorationImage(
+                          image: FileImage(_selectedImage!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                ),
+                child: _selectedImage == null
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.add_a_photo_outlined,
+                            size: 48,
+                            color: Color(0xFF6A6FD6),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Fotoğraf Ekle",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF6A6FD6),
+                            ),
+                          ),
+                          Text(
+                            "Kamera veya Galeri",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       )
                     : null,
               ),
-              child: _selectedImage == null
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_a_photo,
-                            size: 50, color: Colors.orange.shade300),
-                        const SizedBox(height: 10),
-                        Text("Fotoğraf Ekle",
-                            style: GoogleFonts.poppins(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold)),
-                        Text("(Kamera veya Galeri)",
-                            style: GoogleFonts.poppins(
-                                color: Colors.grey, fontSize: 12)),
-                      ],
-                    )
-                  : null,
             ),
-          ),
 
-          const SizedBox(height: 20),
+            const SizedBox(height: 22),
 
-          // TARİH ve MOOD ROZETİ
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(formattedDate,
-                  style: GoogleFonts.poppins(color: Colors.grey)),
-              Chip(
-                label: Text(widget.mood),
-                backgroundColor: Colors.orange.shade100,
+            /// 📅 TARİH & MOOD
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  formattedDate,
+                  style: GoogleFonts.poppins(
+                    color: Colors.grey,
+                    fontSize: 13,
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE9E3FF),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    widget.mood,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF6A6FD6),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 18),
+
+            /// 📝 AÇIKLAMA
+            Text(
+              widget.explanation.isEmpty
+                  ? "Bir açıklama bulunmuyor..."
+                  : widget.explanation,
+              style: GoogleFonts.handlee(
+                fontSize: 18,
+                height: 1.4,
+                color: Colors.black87,
               ),
-            ],
-          ),
-
-          const SizedBox(height: 10),
-
-          // Açıklama
-          Text(
-            widget.explanation.isEmpty
-                ? "Bir açıklama bulunmuyor..."
-                : widget.explanation,
-            style: GoogleFonts.handlee(
-                fontSize: 18, fontWeight: FontWeight.w600),
-            textAlign: TextAlign.center,
-          ),
-        ]),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
