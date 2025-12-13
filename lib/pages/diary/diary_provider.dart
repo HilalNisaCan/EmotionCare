@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// 1. GÜNLÜK MODELİ (Bir sayfada neler olacak?)
+// MODEL
 class DiaryEntry {
   final DateTime date;
-  final String moodLabel; // Mutlu, Üzgün vb.
-  final String emoji;     // 😊, 😔
-  final String explanation; // Kullanıcının notu
-  final String? imagePath; // Fotoğraf yolu (Varsa)
+  final String moodLabel;
+  final String emoji;
+  final String explanation;
+  final String? imagePath;
 
   DiaryEntry({
     required this.date,
@@ -15,28 +15,61 @@ class DiaryEntry {
     required this.explanation,
     this.imagePath,
   });
-}
 
-// 2. YÖNETİCİ (Listeyi yöneten sınıf)
-class DiaryNotifier extends StateNotifier<List<DiaryEntry>> {
-  DiaryNotifier() : super([]); // Başlangıçta liste boş
-
-  // Yeni anı ekleme fonksiyonu
-  void addEntry(String mood, String text, String? image, String emoji) {
-    final newEntry = DiaryEntry(
-      date: DateTime.now(),
-      moodLabel: mood,
-      explanation: text,
-      imagePath: image,
-      emoji: emoji
+  DiaryEntry copyWith({
+    DateTime? date,
+    String? moodLabel,
+    String? emoji,
+    String? explanation,
+    String? imagePath,
+  }) {
+    return DiaryEntry(
+      date: date ?? this.date,
+      moodLabel: moodLabel ?? this.moodLabel,
+      emoji: emoji ?? this.emoji,
+      explanation: explanation ?? this.explanation,
+      imagePath: imagePath ?? this.imagePath,
     );
-    
-    // Listeyi güncelle: Eskilerin üzerine yenisini ekle (En yeni en üstte)
-    state = [newEntry, ...state]; 
   }
 }
 
-// 3. PROVIDER (Uygulamanın erişim noktası)
-final diaryProvider = StateNotifierProvider<DiaryNotifier, List<DiaryEntry>>((ref) {
+// NOTIFIER
+class DiaryNotifier extends StateNotifier<List<DiaryEntry>> {
+  DiaryNotifier() : super([]);
+
+  void addEntry(
+    String mood,
+    String explanation,
+    String? image,
+    String emoji, {
+    DateTime? date,
+  }) {
+    state = [
+      DiaryEntry(
+        moodLabel: mood,
+        explanation: explanation,
+        imagePath: image,
+        emoji: emoji,
+        date: date ?? DateTime.now(),
+      ),
+      ...state,
+    ];
+  }
+
+  void deleteEntry(DiaryEntry entry) {
+    state = state.where((e) => e != entry).toList();
+  }
+
+  void updateEntry(DiaryEntry oldEntry, DiaryEntry newEntry) {
+    state = [
+      for (final e in state)
+        if (e == oldEntry) newEntry else e
+    ];
+  }
+}
+
+// PROVIDER
+final diaryProvider =
+    StateNotifierProvider<DiaryNotifier, List<DiaryEntry>>((ref) {
   return DiaryNotifier();
 });

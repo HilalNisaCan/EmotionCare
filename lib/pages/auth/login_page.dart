@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // 👇 GİDİLECEK SAYFALARIN İMPORTLARI
 import '../dashboard/dashboard_page.dart';
-import 'register_page.dart'; // Aynı klasörde olduğu için direkt yazıyoruz
+import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  bool _loading = false;
 
   @override
   void dispose() {
@@ -26,9 +29,102 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  Future<void> _signIn() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _loading = true);
+
+    try {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text;
+
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          )
+          .timeout(const Duration(seconds: 10));
+
+      if (!mounted) return;
+
+      // ✅ GİRİŞ BAŞARILI → DASHBOARD
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const DashboardPage()),
+      );
+    } on TimeoutException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Bağlantı zaman aşımına uğradı. İnterneti kontrol et.'),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
+      String msg = 'Giriş yapılamadı.';
+      switch (e.code) {
+        case 'user-not-found':
+          msg = 'Bu e-posta ile kayıtlı kullanıcı yok.';
+          break;
+        case 'wrong-password':
+          msg = 'Şifre yanlış.';
+          break;
+        case 'invalid-email':
+          msg = 'E-posta geçersiz.';
+          break;
+        case 'user-disabled':
+          msg = 'Bu kullanıcı devre dışı.';
+          break;
+        case 'too-many-requests':
+          msg = 'Çok fazla deneme yapıldı. Biraz bekle.';
+          break;
+        case 'network-request-failed':
+          msg = 'İnternet bağlantısı yok.';
+          break;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg)),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Beklenmeyen bir hata oluştu.')),
+      );
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _resetPassword() async {
+    final email = _emailController.text.trim();
+
+    if (email.isEmpty || !email.contains('@')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('E-postanı gir.')),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Şifre sıfırlama maili gönderildi ✉️')),
+      );
+    } on FirebaseAuthException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Mail gönderilemedi.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final MaterialColor purple = Colors.purple;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFE6EF),
@@ -37,7 +133,6 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 12),
@@ -47,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.center,
                   style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.purple.shade900,
+                    color: purple.shade900,
                   ),
                 ),
 
@@ -57,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                   'Duygularını takip et, kendine iyi bak 💜',
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.purple.shade300,
+                    color: purple.shade300,
                   ),
                 ),
 
@@ -98,10 +193,10 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'E-posta adresini yazmalısın';
+                              return 'E-posta gerekli';
                             }
                             if (!value.contains('@')) {
-                              return 'Geçerli bir e-posta gir 💌';
+                              return 'Geçerli bir e-posta gir';
                             }
                             return null;
                           },
@@ -116,24 +211,24 @@ class _LoginPageState extends State<LoginPage> {
                             labelText: 'Şifre',
                             prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
                               icon: Icon(
                                 _obscurePassword
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                               ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
                             ),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Şifreni yazmalısın';
+                              return 'Şifre gerekli';
                             }
                             if (value.length < 6) {
-                              return 'Şifre en az 6 karakter olmalı';
+                              return 'En az 6 karakter';
                             }
                             return null;
                           },
@@ -144,7 +239,7 @@ class _LoginPageState extends State<LoginPage> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: _loading ? null : _resetPassword,
                             child: const Text('Şifremi unuttum'),
                           ),
                         ),
@@ -154,29 +249,30 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: 48,
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // 👇 DASHBOARD'A GİT
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => const DashboardPage()),
-                                );
-                              }
-                            },
+                            onPressed: _loading ? null : _signIn,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.purpleAccent,
+                              backgroundColor: purple.shade300,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            child: const Text(
-                              'Giriş yap',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            child: _loading
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Giriş yap',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                           ),
                         ),
 
@@ -184,28 +280,24 @@ class _LoginPageState extends State<LoginPage> {
 
                         Row(
                           children: [
-                            Expanded(
-                              child: Divider(color: Colors.grey.shade300),
-                            ),
+                            Expanded(child: Divider(color: Colors.grey.shade300)),
                             const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: EdgeInsets.symmetric(horizontal: 8),
                               child: Text('veya'),
                             ),
-                            Expanded(
-                              child: Divider(color: Colors.grey.shade300),
-                            ),
+                            Expanded(child: Divider(color: Colors.grey.shade300)),
                           ],
                         ),
 
                         const SizedBox(height: 12),
 
-                        // 👇 "YENİ HESAP OLUŞTUR" BUTONU DÜZELTİLDİ
                         OutlinedButton.icon(
                           onPressed: () {
-                            // 👇 ARTIK KAYIT SAYFASINA GİDİYOR
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const RegisterPage()),
+                              MaterialPageRoute(
+                                builder: (_) => const RegisterPage(),
+                              ),
                             );
                           },
                           icon: const Icon(Icons.person_add_alt_1_outlined),
@@ -231,8 +323,6 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.grey.shade600,
                   ),
                 ),
-
-                const SizedBox(height: 8),
               ],
             ),
           ),
