@@ -32,6 +32,10 @@ dependencies:
   url_launcher: ^6.2.5
   shared_preferences: ^2.2.2
 
+  # 🌙 AI için gerekli
+  http: ^1.2.0          # AI API çağrıları için
+  flutter_dotenv: ^5.1.0  # API key saklamak için (opsiyonel ama önerilir)
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -41,6 +45,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/music/piano.mp3
     - assets/music/focus.mp3
     - assets/music/meditation.mp3

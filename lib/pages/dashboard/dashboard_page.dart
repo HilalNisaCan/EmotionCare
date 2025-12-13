@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../ai_chat_page.dart';
 
 import '../auth/login_page.dart';
 import '../diary/diary_page.dart';
@@ -23,6 +24,17 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     final diaryEntries = ref.watch(diaryProvider);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.purpleAccent,
+        elevation: 6,
+        child: const Icon(Icons.chat_bubble_rounded, color: Colors.white),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AiChatPage()),
+          );
+        },
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -36,29 +48,31 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
                 children: [
                   _buildHeader(context),
                   const SizedBox(height: 20),
 
                   _buildStackedTimelineCard(diaryEntries),
                   const SizedBox(height: 24),
-_buildFeatureCard(
-  title: "Müzik Dinle",
-  badge: "🎧",
-  color: const Color(0xFFE1BEE7),
-  icon: Icons.headphones,
-  onTap: () => Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => MusicPage(
-        showSaveButton: false,  // 🔥 Ana sayfadan açılınca kaydet butonu YOK
-        mood: "",
-        actionName: "",
-      ),
-    ),
-  ),
-),
+
+                  _buildFeatureCard(
+                    title: "Müzik Dinle",
+                    badge: "🎧",
+                    color: const Color(0xFFE1BEE7),
+                    icon: Icons.headphones,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const MusicPage(
+                          showSaveButton: false,
+                          mood: "",
+                          actionName: "",
+                        ),
+                      ),
+                    ),
+                  ),
 
                   const SizedBox(height: 14),
 
@@ -72,6 +86,7 @@ _buildFeatureCard(
                       MaterialPageRoute(builder: (_) => const DiaryPage()),
                     ),
                   ),
+
                   const SizedBox(height: 14),
 
                   _buildFeatureCard(
@@ -131,7 +146,7 @@ _buildFeatureCard(
   }
 
   // ---------------------------------------
-  // PREMIUM TIMELINE MOOD GRAPH
+  // TIMELINE GRAPH
   // ---------------------------------------
   Widget _buildStackedTimelineCard(List<DiaryEntry> allEntries) {
     int daysToShow = _selectedPeriod == 'Haftalık' ? 7 : 30;
@@ -214,8 +229,9 @@ _buildFeatureCard(
                           width: 20,
                           height: 130,
                           decoration: BoxDecoration(
-                            color:
-                                entries.isEmpty ? Colors.white : Colors.transparent,
+                            color: entries.isEmpty
+                                ? Colors.white
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: entries.isEmpty
@@ -237,7 +253,10 @@ _buildFeatureCard(
                       const SizedBox(height: 6),
                       Text(
                         DateFormat(
-                                _selectedPeriod == 'Haftalık' ? 'E' : 'd', 'tr_TR')
+                                _selectedPeriod == 'Haftalık'
+                                    ? 'E'
+                                    : 'd',
+                                'tr_TR')
                             .format(date),
                         style: const TextStyle(
                             fontSize: 12, fontWeight: FontWeight.bold),
@@ -259,15 +278,18 @@ _buildFeatureCard(
   // ---------------------------------------
   // Tooltip Text
   // ---------------------------------------
-  String _buildTooltip(DateTime date, List<DiaryEntry> entries) {
-    String result = DateFormat("d MMMM", "tr_TR").format(date) + "\n";
+  String _buildTooltip(
+      DateTime date, List<DiaryEntry> entries) {
+    String result =
+        DateFormat("d MMMM", "tr_TR").format(date) + "\n";
 
     if (entries.isEmpty) return result + "Veri yok";
 
     Map<String, int> count = {};
 
     for (var e in entries) {
-      count[e.moodLabel] = (count[e.moodLabel] ?? 0) + 1;
+      count[e.moodLabel] =
+          (count[e.moodLabel] ?? 0) + 1;
     }
 
     count.forEach((key, value) => result += "$key: $value\n");
@@ -349,16 +371,22 @@ _buildFeatureCard(
     return GestureDetector(
       onTap: () => setState(() => _selectedPeriod = label),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: selected ? Colors.white : Colors.transparent,
+          color:
+              selected ? Colors.white : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: selected ? Colors.blueAccent : Colors.blueGrey,
-            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+            color: selected
+                ? Colors.blueAccent
+                : Colors.blueGrey,
+            fontWeight: selected
+                ? FontWeight.bold
+                : FontWeight.normal,
           ),
         ),
       ),
@@ -379,7 +407,8 @@ _buildFeatureCard(
       onTap: onTap,
       child: Container(
         height: 85,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(18),
@@ -402,10 +431,12 @@ _buildFeatureCard(
               child: Text(
                 title,
                 style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w600),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
               ),
             ),
-            Text(badge, style: const TextStyle(fontSize: 20)),
+            Text(badge,
+                style: const TextStyle(fontSize: 20)),
           ],
         ),
       ),

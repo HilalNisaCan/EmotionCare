@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 // Sayfalar
 import 'pages/auth/login_page.dart';
@@ -11,6 +13,9 @@ import 'pages/music/music_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 🔐 ENV DOSYASINI YÜKLE
+  await dotenv.load(fileName: ".env");
 
   // Firebase başlat
   await Firebase.initializeApp();
