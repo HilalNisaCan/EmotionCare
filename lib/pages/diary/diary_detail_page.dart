@@ -31,6 +31,7 @@ class _DiaryDetailPageState extends ConsumerState<DiaryDetailPage> {
       appBar: AppBar(
         title: const Text("Günlüğü Düzenle"),
         backgroundColor: Colors.purple,
+       foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
