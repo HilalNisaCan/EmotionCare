@@ -1,31 +1,40 @@
+import 'package:emotioncare/pages/diary/diary_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../diary/diary_calendar_page.dart';
 import 'diary_detail_page.dart';
 
 class DiaryCalendarPage extends StatelessWidget {
-  final Map<String, List<String>> diaryData;
+  final Map<String, List<DiaryEntry>> diaryData;
 
-  const DiaryCalendarPage({super.key, required this.diaryData});
+  const DiaryCalendarPage({
+    super.key,
+    required this.diaryData,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Takvim")),
+      appBar: AppBar(
+        title: const Text("Takvim"),
+      ),
       body: ListView(
         children: diaryData.keys.map((dateKey) {
-          DateTime date = DateTime.parse(dateKey);
+          final DateTime date = DateTime.parse(dateKey);
+          final List<DiaryEntry> entries = diaryData[dateKey]!;
 
           return ListTile(
             leading: const Icon(Icons.book),
-            title: Text(DateFormat("dd MMMM yyyy").format(date)),
-            subtitle: Text("${diaryData[dateKey]!.length} kayıt"),
+            title: Text(
+              DateFormat("dd MMMM yyyy", "tr_TR").format(date),
+            ),
+            subtitle: Text("${entries.length} kayıt"),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => DiaryDetailPage(
-                    date: dateKey,
-                    entries: diaryData[dateKey]!,
+                    entry: entries.first, // ✅ ARTIK DOĞRU TİP
                   ),
                 ),
               );

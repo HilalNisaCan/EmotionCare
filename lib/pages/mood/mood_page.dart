@@ -63,7 +63,8 @@ class _MoodPageState extends ConsumerState<MoodPage> {
       ),
     );
 
-    Navigator.pop(context);
+    // İşlem bittiği için direkt Ana Sayfaya dönüyoruz
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 
   void _showWarning() {
@@ -76,7 +77,7 @@ class _MoodPageState extends ConsumerState<MoodPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // 🌈 ARKA PLAN GRADIENT — HATASIZ
+        // 🌈 ARKA PLAN GRADIENT
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFFFFE6EF), Color(0xFFD8B7FF)],
@@ -91,21 +92,41 @@ class _MoodPageState extends ConsumerState<MoodPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // BAŞLIK
-                Text(
-                  "Merhaba 🌙",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.purple.shade900,
-                  ),
+                // 👇 EKLENEN KISIM: GERİ BUTONU
+                Row(
+                  children: [
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: Color(0xFF4A148C), // Koyu mor
+                        size: 22,
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const SizedBox(width: 10),
+                    // BAŞLIK (Yanına taşıdım)
+                    Text(
+                      "Merhaba 🌙",
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple.shade900,
+                      ),
+                    ),
+                  ],
                 ),
+                
                 const SizedBox(height: 6),
-                Text(
-                  "Bugün nasıl hissediyorsun?",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.purple.shade600,
+                Padding(
+                  padding: const EdgeInsets.only(left: 32.0), // Hizalama için
+                  child: Text(
+                    "Bugün nasıl hissediyorsun?",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.purple.shade600,
+                    ),
                   ),
                 ),
 

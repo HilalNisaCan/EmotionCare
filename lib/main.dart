@@ -19,7 +19,7 @@ Future<void> main() async {
   GoogleFonts.config.allowRuntimeFetching = true;
 
   // 🔐 ENV
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env.example");
 
   // 🔥 Firebase
   await Firebase.initializeApp(

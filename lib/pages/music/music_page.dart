@@ -153,7 +153,7 @@ class _MusicPageState extends ConsumerState<MusicPage> {
           IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded,
                 size: 18, color: Color(0xFF6A1B9A)),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
           ),
           const SizedBox(width: 6),
           Text(

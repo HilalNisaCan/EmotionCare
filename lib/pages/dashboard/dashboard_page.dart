@@ -53,7 +53,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 children: [
                   _buildHeader(),
                   const SizedBox(height: 18),
+                  
+                  // 👇 GÜNCELLENEN GRAFİK ALANI
                   _buildTimelineCard(diaryEntries),
+                  
                   const SizedBox(height: 24),
 
                   _buildFeatureCard(
@@ -180,7 +183,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     );
   }
 
-  // ================= TIMELINE =================
+  // ================= TIMELINE (GÜNCELLENDİ) =================
   Widget _buildTimelineCard(List<DiaryEntry> allEntries) {
     final daysToShow = _selectedPeriod == 'Haftalık' ? 7 : 30;
     final now = DateTime.now();
@@ -233,24 +236,72 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
         ),
         const SizedBox(height: 14),
 
-        // GRAFİK
+        // GRAFİK ALANI
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end, // Sütunları aşağı hizala
             children: dates.map((date) {
               final entries = _findEntriesForDate(allEntries, date);
+              
+              // O gün hiç kayıt yoksa boş placeholder göster
+              if (entries.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 50, // Boş günler daha kısa
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        DateFormat('E', 'tr_TR').format(date),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF263238),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              // Kayıt varsa: Renkleri ve oranları hesapla
+              final Map<String, int> moodCounts = {};
+              for (var e in entries) {
+                moodCounts[e.moodLabel] = (moodCounts[e.moodLabel] ?? 0) + 1;
+              }
+
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: Column(
                   children: [
+                    // STACKED BAR SÜTUNU
                     Container(
                       width: 20,
-                      height: entries.isEmpty ? 50 : 110,
+                      height: 110, // Dolu günler tam boy
                       decoration: BoxDecoration(
-                        color: entries.isEmpty
-                            ? Colors.white.withOpacity(0.6)
-                            : _getMoodColor(entries.first.moodLabel),
                         borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Column(
+                          // Flex ile oranlı bölme
+                          children: moodCounts.entries.map((e) {
+                            return Expanded(
+                              flex: e.value, // Bastığın sayı kadar yer kapla
+                              child: Container(
+                                color: _getMoodColor(e.key),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 6),

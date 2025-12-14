@@ -74,181 +74,178 @@ class _SuggestionsPageState extends ConsumerState<SuggestionsPage> {
   // 📞 En Yakınım
   // ==========================================================
   void _showPhonebookManager() {
-  final name = TextEditingController();
-  final number = TextEditingController();
+    final name = TextEditingController();
+    final number = TextEditingController();
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: const Color(0xFFF6EDF9),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// 💖 BAŞLIK
-              Text(
-                "En Yakınım ❤️",
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF6A1B9A),
-                ),
-              ),
-
-              const SizedBox(height: 6),
-
-              /// 📌 ALT AÇIKLAMA
-              Text(
-                _friendsList.isEmpty
-                    ? "Henüz kimse yok."
-                    : "Sana iyi gelen kişiler:",
-                style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  color: Colors.grey.shade700,
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              /// 📋 KAYITLI KİŞİLER
-              if (_friendsList.isNotEmpty)
-                SizedBox(
-                  height: 120,
-                  child: ListView.separated(
-                    itemCount: _friendsList.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: 6),
-                    itemBuilder: (_, i) {
-                      final f = _friendsList[i];
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.person,
-                                size: 18, color: Color(0xFFBB3FDD)),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                f["name"]!,
-                                style: GoogleFonts.poppins(fontSize: 14),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete_outline,
-                                  size: 18, color: Colors.redAccent),
-                              onPressed: () {
-                                _removeFriend(i);
-                                Navigator.pop(context);
-                                _showPhonebookManager();
-                              },
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-              const SizedBox(height: 14),
-
-              /// ✏️ İSİM
-              TextField(
-                controller: name,
-                decoration: InputDecoration(
-                  hintText: "İsim",
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              /// 📞 NUMARA
-              TextField(
-                controller: number,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  hintText: "Numara",
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              /// 🔘 BUTONLAR
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        "Kapat",
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFBB3FDD),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 0,
-                      ),
-                      onPressed: () {
-                        if (name.text.isNotEmpty &&
-                            number.text.isNotEmpty) {
-                          _addFriend(name.text, number.text);
-                          Navigator.pop(context);
-                          _showPhonebookManager();
-                        }
-                      },
-                      child: Text(
-                        "Ekle",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: const Color(0xFFF6EDF9),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
           ),
-        ),
-      );
-    },
-  );
-}
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// 💖 BAŞLIK
+                Text(
+                  "En Yakınım ❤️",
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF6A1B9A),
+                  ),
+                ),
 
+                const SizedBox(height: 6),
+
+                /// 📌 ALT AÇIKLAMA
+                Text(
+                  _friendsList.isEmpty
+                      ? "Henüz kimse yok."
+                      : "Sana iyi gelen kişiler:",
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                /// 📋 KAYITLI KİŞİLER
+                if (_friendsList.isNotEmpty)
+                  SizedBox(
+                    height: 120,
+                    child: ListView.separated(
+                      itemCount: _friendsList.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 6),
+                      itemBuilder: (_, i) {
+                        final f = _friendsList[i];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.person,
+                                  size: 18, color: Color(0xFFBB3FDD)),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  f["name"]!,
+                                  style: GoogleFonts.poppins(fontSize: 14),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline,
+                                    size: 18, color: Colors.redAccent),
+                                onPressed: () {
+                                  _removeFriend(i);
+                                  Navigator.pop(context);
+                                  _showPhonebookManager();
+                                },
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                const SizedBox(height: 14),
+
+                /// ✏️ İSİM
+                TextField(
+                  controller: name,
+                  decoration: InputDecoration(
+                    hintText: "İsim",
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                /// 📞 NUMARA
+                TextField(
+                  controller: number,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    hintText: "Numara",
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                /// 🔘 BUTONLAR
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          "Kapat",
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFBB3FDD),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 0,
+                        ),
+                        onPressed: () {
+                          if (name.text.isNotEmpty && number.text.isNotEmpty) {
+                            _addFriend(name.text, number.text);
+                            Navigator.pop(context);
+                            _showPhonebookManager();
+                          }
+                        },
+                        child: Text(
+                          "Ekle",
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   // ==========================================================
   // 📞 ARAMA MENÜSÜ
@@ -466,59 +463,63 @@ class _SuggestionsPageState extends ConsumerState<SuggestionsPage> {
   }
 
   @override
-Widget build(BuildContext context) {
-  final state = ref.watch(moodDetailProvider);
-  final explanation = state.explanation;
-  final suggestions = _getSuggestions();
+  Widget build(BuildContext context) {
+    final state = ref.watch(moodDetailProvider);
+    final explanation = state.explanation;
+    final suggestions = _getSuggestions();
 
-  return Scaffold(
-    backgroundColor: const Color(0xFFE6D2EA), // 🌸 hafif koyu pembe
-    appBar: AppBar(
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      leading: IconButton(
-        icon: const Icon(
-          Icons.arrow_back_ios_new_rounded,
-          color: Color(0xFF6A1B9A),
-          size: 18,
+    return Scaffold(
+      backgroundColor: const Color(0xFFE6D2EA), // 🌸 hafif koyu pembe
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF6A1B9A),
+            size: 18,
+          ),
+          // 👇 DEĞİŞİKLİK BURADA YAPILDI
+          // Eski: onPressed: () => Navigator.pop(context),
+          // Yeni: Ana sayfaya (Dashboard) kadar geri dön
+          onPressed: () =>
+              Navigator.popUntil(context, (route) => route.isFirst),
         ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: Text(
-        "${widget.moodLabel} için",
-        style: GoogleFonts.poppins(
-          fontSize: 17,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF6A1B9A),
+        title: Text(
+          "${widget.moodLabel} için",
+          style: GoogleFonts.poppins(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF6A1B9A),
+          ),
         ),
       ),
-    ),
-    body: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-          child: Text(
-            "Şu an kendin için küçük ama etkili bir adım seçebilirsin 💜",
-            style: GoogleFonts.poppins(
-              fontSize: 13,
-              color: Colors.grey.shade700,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+            child: Text(
+              "Şu an kendin için küçük ama etkili bir adım seçebilirsin 💜",
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                color: Colors.grey.shade700,
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-            itemCount: suggestions.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 14),
-            itemBuilder: (_, i) =>
-                _buildFancyCard(context, suggestions[i], explanation),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+              itemCount: suggestions.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 14),
+              itemBuilder: (_, i) =>
+                  _buildFancyCard(context, suggestions[i], explanation),
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   // ==========================================================
   // 📌 TIKLANINCA DOĞRU SAYFAYA GÖTÜR
@@ -550,21 +551,20 @@ Widget build(BuildContext context) {
         }
 
         // 📸 ANI YAKALA
-        // 📸 ANI YAKALA
-if (raw == 'Anı Yakala') {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => MemoryPage(
-        showSaveButton: true,
-        mood: mood,
-        actionName: "fotoğraf çekildi 📸",
-        explanation: explanation,
-      ),
-    ),
-  );
-  return;
-}
+        if (raw == 'Anı Yakala') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => MemoryPage(
+                showSaveButton: true,
+                mood: mood,
+                actionName: "fotoğraf çekildi 📸",
+                explanation: explanation,
+              ),
+            ),
+          );
+          return;
+        }
 
         // 🌬 NEFES
         if (raw == 'Nefes Egzersizi') {
@@ -689,16 +689,16 @@ if (raw == 'Anı Yakala') {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(18),
-  boxShadow: [
-    BoxShadow(
-      color: Colors.black.withOpacity(0.05),
-      blurRadius: 12,
-      offset: const Offset(0, 6),
-    ),
-  ],
-),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
         child: Row(
           children: [
             Container(
@@ -707,7 +707,7 @@ if (raw == 'Anı Yakala') {
                 color: item['bg'],
                 borderRadius: BorderRadius.circular(15),
               ),
-             child: Icon(item['icon'], color: item['color'], size: 26),
+              child: Icon(item['icon'], color: item['color'], size: 26),
             ),
             const SizedBox(width: 15),
             Expanded(

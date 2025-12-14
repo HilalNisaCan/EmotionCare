@@ -56,7 +56,10 @@ class _MoodDetailPageState extends ConsumerState<MoodDetailPage> {
                         color: Color(0xFF8E24AA),
                         size: 20,
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      // 👇 DEĞİŞİKLİK BURADA YAPILDI:
+                      // Eski: onPressed: () => Navigator.pop(context),
+                      // Yeni: Ana sayfaya (Dashboard) kadar tüm pencereleri kapatır.
+                      onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
                     ),
                     const SizedBox(width: 4),
                     Text(
