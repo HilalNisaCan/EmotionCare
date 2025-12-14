@@ -45,5 +45,17 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+		<!-- 📸 Kamera izni -->
+	<key>NSCameraUsageDescription</key>
+	<string>Anı yakalamak için kameraya erişim gerekiyor.</string>
+
+	<!-- 🖼 Galeri izni -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Fotoğraflarından anı eklemek için erişim gerekiyor.</string>
+
+	<!-- ➕ iOS 14+ foto ekleme izni -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Fotoğraf kaydetmek için erişim gerekiyor.</string>
+
 </dict>
 </plist>

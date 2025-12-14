@@ -63,7 +63,6 @@ class _MoodPageState extends ConsumerState<MoodPage> {
       ),
     );
 
-    // İşlem bittiği için direkt Ana Sayfaya dönüyoruz
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 
@@ -77,7 +76,6 @@ class _MoodPageState extends ConsumerState<MoodPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // 🌈 ARKA PLAN GRADIENT
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFFFFE6EF), Color(0xFFD8B7FF)],
@@ -85,14 +83,13 @@ class _MoodPageState extends ConsumerState<MoodPage> {
             end: Alignment.bottomCenter,
           ),
         ),
-
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(22),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 👇 EKLENEN KISIM: GERİ BUTONU
+                /// 🔙 GERİ BUTONU + BAŞLIK
                 Row(
                   children: [
                     IconButton(
@@ -100,13 +97,12 @@ class _MoodPageState extends ConsumerState<MoodPage> {
                       constraints: const BoxConstraints(),
                       icon: const Icon(
                         Icons.arrow_back_ios_new_rounded,
-                        color: Color(0xFF4A148C), // Koyu mor
+                        color: Color(0xFF4A148C),
                         size: 22,
                       ),
                       onPressed: () => Navigator.pop(context),
                     ),
                     const SizedBox(width: 10),
-                    // BAŞLIK (Yanına taşıdım)
                     Text(
                       "Merhaba 🌙",
                       style: TextStyle(
@@ -117,10 +113,11 @@ class _MoodPageState extends ConsumerState<MoodPage> {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 6),
+
                 Padding(
-                  padding: const EdgeInsets.only(left: 32.0), // Hizalama için
+                  padding: const EdgeInsets.only(left: 32),
                   child: Text(
                     "Bugün nasıl hissediyorsun?",
                     style: TextStyle(
@@ -132,7 +129,6 @@ class _MoodPageState extends ConsumerState<MoodPage> {
 
                 const SizedBox(height: 20),
 
-                // BİLGİ KUTUSU
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
@@ -147,7 +143,6 @@ class _MoodPageState extends ConsumerState<MoodPage> {
 
                 const SizedBox(height: 25),
 
-                // EMOJİ SEÇİM GRID
                 Expanded(
                   child: GridView.builder(
                     itemCount: moods.length,
@@ -182,13 +177,16 @@ class _MoodPageState extends ConsumerState<MoodPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(mood["emoji"]!, style: const TextStyle(fontSize: 42)),
+                              Text(mood["emoji"]!,
+                                  style: const TextStyle(fontSize: 42)),
                               const SizedBox(height: 10),
                               Text(
                                 mood["label"]!,
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.w500,
                                   color: Colors.black87,
                                 ),
                               ),
@@ -202,7 +200,6 @@ class _MoodPageState extends ConsumerState<MoodPage> {
 
                 const SizedBox(height: 10),
 
-                // DETAYLI BUTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -214,13 +211,15 @@ class _MoodPageState extends ConsumerState<MoodPage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text("Seç ve Önerileri Gör →",
-                        style: TextStyle(fontSize: 16, color: Colors.white)),
+                    child: const Text(
+                      "Seç ve Önerileri Gör →",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
                 ),
+
                 const SizedBox(height: 10),
 
-                // HIZLI BUTON
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
@@ -232,8 +231,10 @@ class _MoodPageState extends ConsumerState<MoodPage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text("Direkt Kaydet (Önerisiz)",
-                        style: TextStyle(fontSize: 15, color: Colors.white)),
+                    child: const Text(
+                      "Direkt Kaydet (Önerisiz)",
+                      style: TextStyle(fontSize: 15, color: Colors.white),
+                    ),
                   ),
                 ),
               ],
