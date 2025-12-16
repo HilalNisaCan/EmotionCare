@@ -1,8 +1,9 @@
 🌙 EmotionCare
 
-EmotionCare, kullanıcıların duygularını takip edebileceği, günlük yazabileceği, anı kaydedebileceği ve kendine zaman ayırmasını teşvik eden aktiviteler sunan bir mobil uygulamadır.
+EmotionCare, kullanıcıların duygularını takip edebileceği, günlük yazabileceği, anı kaydedebileceği ve kendine zaman ayırmasını teşvik eden aktiviteler sunan bir mobil duygusal farkındalık uygulamasıdır.
 
-Uygulama, bireyin günlük ruh halini fark etmesini, duygularını kayıt altına almasını ve zihinsel iyi oluşunu desteklemeyi amaçlar.
+Uygulama; bireyin günlük ruh halini fark etmesini, duygularını kayıt altına almasını ve zihinsel iyi oluşunu desteklemeyi amaçlar.
+Proje, Hi-Kod 2.0 Mobil Uygulama Geliştirme Atölyesi kapsamında ekip çalışması olarak geliştirilmiştir.
 
 🎯 Projenin Amacı
 
@@ -17,9 +18,9 @@ Zamanlayıcılı aktivitelerle (okuma, yürüyüş, dinlenme vb.) odaklanmayı a
 Basit, sade ve kullanıcı dostu bir arayüz sunmak
 
 🧩 Uygulama Özellikleri
-🔐 Giriş & Dashboard
+🔐 Giriş & Ana Sayfa (Dashboard)
 
-Kullanıcı giriş ekranı
+Kullanıcı kayıt ve giriş ekranı
 
 Günlük duygu dağılımını gösteren ana sayfa
 
@@ -29,15 +30,13 @@ Hızlı erişim kartları
 
 Günlük ruh hali seçimi
 
-Seçilen duyguya göre öneriler
+Seçilen duyguya göre kişiselleştirilmiş öneriler
 
-Mood geçmişi görüntüleme
+Duygu geçmişi görüntüleme
 
 📖 Günlük Yazma
 
-Günlük ekleme
-
-Günlük düzenleme ve silme
+Günlük ekleme, düzenleme ve silme
 
 Tarih bazlı filtreleme:
 
@@ -65,29 +64,29 @@ Dinlenme / güç uykusu
 
 Geri sayımlı süre takibi
 
-Aktivite tamamlanınca otomatik kayıt
+Aktivite tamamlandığında otomatik kayıt
 
 🎵 Müzik Dinleme
 
 Rahatlatıcı müzikler
 
-Mini player
+Mini player arayüzü
 
 Arka planda çalma desteği
 
 🤖 AI Sohbet (Geliştirmeye Açık)
 
-Kullanıcıyla konuşabilen destekleyici sohbet ekranı
+Kullanıcıyla empatik bir şekilde iletişim kuran sohbet ekranı
 
-Not: Bu alan ileride geliştirilecek özellikler arasında yer almaktadır.
+Not: Bu alan, ileride geliştirilecek özellikler arasında yer almaktadır.
 
 🛠 Kullanılan Teknolojiler
 
 Flutter (Dart)
 
-Riverpod – State management
+Riverpod – State Management
 
-Firebase – Altyapı
+Firebase – Authentication & Database
 
 Google Fonts
 
@@ -107,10 +106,14 @@ Genişletilebilir ekran ve özellik yapısı
 
 📌 Geliştirmeye Açık Alanlar
 
-AI sohbetin daha akıllı hale getirilmesi
+AI sohbetin daha akıllı ve kişiselleştirilmiş hale getirilmesi
 
 Mood analizine dayalı grafikler
 
 Bildirim sistemi
 
-Tema özelleştirme (renk / karanlık mod detayları)
+Tema özelleştirme (renkler ve karanlık mod detayları)
+
+👥 Ekip
+
+Bu proje, Hilal Nisa Canpolat, Hatice Büyükkol, Helin Çelik ve Zeynep Beyza Baran tarafından ekip çalışması olarak geliştirilmiştir.
