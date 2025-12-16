@@ -41,9 +41,8 @@ class _BreathingPageState extends ConsumerState<BreathingPage> {
     super.dispose();
   }
 
-  // --- NEFES DÖNGÜLERİ ---
+  // 🌬 NEFES DÖNGÜLERİ
   void _startBreathingCycle() {
-    if (!mounted) return;
     setState(() {
       _phase = "inhale";
       _counter = 4;
@@ -96,7 +95,7 @@ class _BreathingPageState extends ConsumerState<BreathingPage> {
     });
   }
 
-  // --- PUANLAMA DİYALOĞU ---
+  // ⭐ PUANLAMA DİYALOĞU (OVERFLOW FIXLİ)
   void _showRatingDialog() {
     int selectedRating = 0;
 
@@ -107,51 +106,71 @@ class _BreathingPageState extends ConsumerState<BreathingPage> {
         return StatefulBuilder(
           builder: (c, setDialogState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              title: Text("Nasıl Hissediyorsun?",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: Text(
+                "Nasıl Hissediyorsun?",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Rahatlayabildin mi?", style: GoogleFonts.poppins()),
+                  Text(
+                    "Rahatlayabildin mi?",
+                    style: GoogleFonts.poppins(),
+                  ),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+
+                  /// ✅ ROW YERİNE WRAP (TAŞMA SORUNU ÇÖZÜLDÜ)
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 8,
                     children: List.generate(5, (i) {
                       return IconButton(
                         icon: Icon(
-                          i < selectedRating ? Icons.star : Icons.star_border,
+                          i < selectedRating
+                              ? Icons.star
+                              : Icons.star_border,
                           color: Colors.amber,
-                          size: 40,
+                          size: 36,
                         ),
                         onPressed: () {
                           setDialogState(() => selectedRating = i + 1);
                         },
                       );
                     }),
-                  )
+                  ),
                 ],
               ),
               actions: [
                 Center(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan,
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
+                      backgroundColor: Colors.cyan,
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 12,
+                      ),
+                    ),
                     onPressed: () {
                       if (selectedRating == 0) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Lütfen puan verin ⭐")),
+                          const SnackBar(
+                            content: Text("Lütfen puan verin ⭐"),
+                          ),
                         );
                       } else {
                         Navigator.pop(context);
                         _handleRating(selectedRating);
                       }
                     },
-                    child: Text("Tamamla",
-                        style: GoogleFonts.poppins(color: Colors.white)),
+                    child: Text(
+                      "Tamamla",
+                      style: GoogleFonts.poppins(color: Colors.white),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -163,9 +182,8 @@ class _BreathingPageState extends ConsumerState<BreathingPage> {
     );
   }
 
-  // --- PUANLAMA SONUCU ---
+  // 📌 PUANLAMA SONRASI AKIŞ
   void _handleRating(int rating) {
-    // ⭐ Günlüğe kaydetme
     if (widget.showSaveButton) {
       ref.read(diaryProvider.notifier).addEntry(
         widget.mood,
@@ -175,7 +193,6 @@ class _BreathingPageState extends ConsumerState<BreathingPage> {
       );
     }
 
-    // Kullanıcı kötü hissettiyse → müzik aç
     if (rating <= 3) {
       Navigator.push(
         context,
@@ -190,19 +207,23 @@ class _BreathingPageState extends ConsumerState<BreathingPage> {
       return;
     }
 
-    // İyi hissettiyse → Ana sayfa
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 
-  // --- ARAYÜZ ---
+  // 🎨 ARAYÜZ
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF4FC3F7),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text("Nefes Egzersizi",
-            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text(
+          "Nefes Egzersizi",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -224,14 +245,21 @@ class _BreathingPageState extends ConsumerState<BreathingPage> {
                 child: Text(
                   "$_counter",
                   style: GoogleFonts.poppins(
-                      fontSize: 60, color: Colors.white, fontWeight: FontWeight.bold),
+                    fontSize: 60,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 60),
             Text(
               _instruction,
-              style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w600, color: Colors.white),
+              style: GoogleFonts.poppins(
+                fontSize: 26,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

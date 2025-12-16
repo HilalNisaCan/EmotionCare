@@ -7,7 +7,6 @@ class AiChatService {
       "https://openrouter.ai/api/v1/chat/completions";
 
   static Future<String> sendMessage(String message) async {
-    // ✅ ENV ARTIK BURADA OKUNUYOR
     final apiKey = dotenv.env['OPENROUTER_API_KEY'];
 
     print("ENV KEY => $apiKey");
@@ -27,7 +26,7 @@ class AiChatService {
               "X-Title": "EmotionCare",
             },
             body: jsonEncode({
-              "model": "openai/gpt-3.5-turbo",
+              "model": "openai/gpt-4o-mini",
               "messages": [
                 {
                   "role": "system",
@@ -39,11 +38,11 @@ class AiChatService {
                   "content": message
                 }
               ],
-              "max_tokens": 200,
+              "max_tokens": 300,
               "temperature": 0.6
             }),
           )
-          .timeout(const Duration(seconds: 12));
+          .timeout(const Duration(seconds: 15));
 
       print("STATUS => ${response.statusCode}");
       print("BODY => ${response.body}");

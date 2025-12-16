@@ -15,11 +15,8 @@ import 'pages/music/music_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ Google Fonts runtime fetching AÇIK
-  GoogleFonts.config.allowRuntimeFetching = true;
-
-  // 🔐 ENV
-  await dotenv.load(fileName: ".env.example");
+  // 🔐 ENV (❗ MUTLAKA .env OLMALI)
+  await dotenv.load(fileName: ".env");
 
   // 🔥 Firebase
   await Firebase.initializeApp(
@@ -29,13 +26,15 @@ Future<void> main() async {
   // 📅 Tarih formatları
   await initializeDateFormatting('tr_TR', null);
 
+  // ✨ Google Fonts runtime fetching AÇIK
+  GoogleFonts.config.allowRuntimeFetching = true;
+
   runApp(
     const ProviderScope(
       child: MyApp(),
     ),
   );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -46,14 +45,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'EmotionCare',
 
-      // ✨ LIGHT TEMA
+      // 🌸 LIGHT TEMA
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: const Color(0xFFFFE6EF),
         useMaterial3: true,
-
-        // ✅ (PERF) GoogleFonts yerine stabil textTheme
-        // (Görünüm çok az değişir ama kasma ciddi azalır)
         textTheme: ThemeData.light().textTheme,
       ),
 
@@ -62,10 +58,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0F0F12),
         useMaterial3: true,
-
-        // ✅ (PERF) GoogleFonts yerine stabil textTheme
         textTheme: ThemeData.dark().textTheme,
-
         colorScheme: const ColorScheme.dark(
           primary: Colors.purple,
           secondary: Colors.tealAccent,
